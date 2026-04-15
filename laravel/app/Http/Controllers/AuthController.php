@@ -5,7 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Password;
 
 class AuthController extends Controller
@@ -63,7 +66,7 @@ class AuthController extends Controller
     public function me(Request $request)
     {
         return response()->json([
-            'user'            => $request->user(),
+            'user'            => $request->user()->load('profilePhoto'),
             'active_sessions' => $request->user()->tokens()->count(),
         ], Response::HTTP_OK);
     }
@@ -121,6 +124,80 @@ class AuthController extends Controller
         return response()->json([
             'message' => 'Profil bol úspešne aktualizovaný.',
             'user'    => $request->user()->fresh(),
+        ], Response::HTTP_OK);
+    }
+
+    public function storeProfilePhoto(Request $request)
+    {
+        $request->validate([
+            'photo' => ['required', 'image', 'max:3072'],
+        ]);
+
+        $user = $request->user();
+        $file = $request->file('photo');
+        $folder = "profile-photos/{$user->id}";
+        $storedName = Str::ulid() . '.' . $file->getClientOriginalExtension();
+        $path = null;
+
+        DB::beginTransaction();
+
+        try {
+            $path = $file->storeAs($folder, $storedName, 'public');
+
+            $attachment = $user->profilePhoto()->create([
+                'public_id' => (string) Str::ulid(),
+                'collection' => 'profile-photo',
+                'visibility' => 'public',
+                'disk' => 'public',
+                'path' => $path,
+                'original_name' => $file->getClientOriginalName(),
+                'stored_name' => $storedName,
+                'mime_type' => $file->getClientMimeType(),
+                'size' => $file->getSize(),
+            ]);
+
+            $oldPhoto = $user->profilePhoto()->where('id', '!=', $attachment->id)->first();
+
+            if ($oldPhoto) {
+                Storage::disk('public')->delete($oldPhoto->path);
+                $oldPhoto->delete();
+            }
+
+            DB::commit();
+
+            return response()->json([
+                'message' => 'Profilová fotka bola úspešne nahraná.',
+                'url' => Storage::disk('public')->url($path),
+            ], Response::HTTP_CREATED);
+        } catch (\Throwable $e) {
+            DB::rollBack();
+
+            if ($path) {
+                Storage::disk('public')->delete($path);
+            }
+
+            return response()->json([
+                'message' => 'Nahrávanie profilovej fotky zlyhalo.',
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public function destroyProfilePhoto(Request $request)
+    {
+        $user = $request->user();
+        $photo = $user->profilePhoto;
+
+        if (!$photo) {
+            return response()->json([
+                'message' => 'Používateľ nemá profilovú fotku.',
+            ], Response::HTTP_NOT_FOUND);
+        }
+
+        Storage::disk($photo->disk)->delete($photo->path);
+        $photo->delete();
+
+        return response()->json([
+            'message' => 'Profilová fotka bola odstránená.',
         ], Response::HTTP_OK);
     }
 }

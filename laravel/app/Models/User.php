@@ -3,8 +3,11 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -21,6 +24,13 @@ class User extends Authenticatable
         'password',
         'role',
         'premium_until',
+        'account_type',
+        'account_status',
+        'phone',
+        'gdpr_consented_at',
+        'marketing_consented_at',
+        'onboarded_at',
+        'last_login_at',
     ];
 
     protected $hidden = [
@@ -34,6 +44,10 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'premium_until' => 'datetime',
+            'gdpr_consented_at' => 'datetime',
+            'marketing_consented_at' => 'datetime',
+            'onboarded_at' => 'datetime',
+            'last_login_at' => 'datetime',
         ];
     }
 
@@ -57,8 +71,26 @@ class User extends Authenticatable
         return $this->hasMany(Comment::class);
     }
 
+    public function roles(): BelongsToMany
+    {
+        return $this->belongsToMany(Role::class)
+            ->withPivot(['assigned_by_user_id', 'assigned_at'])
+            ->withTimestamps();
+    }
+
+    public function studentProfile(): HasOne
+    {
+        return $this->hasOne(StudentProfile::class);
+    }
+
     public function tasks(): HasManyThrough
     {
         return $this->hasManyThrough(Task::class, Note::class, 'user_id', 'note_id', 'id', 'id');
+    }
+
+    public function profilePhoto(): MorphOne
+    {
+        return $this->morphOne(Attachment::class, 'attachable')
+            ->where('collection', 'profile-photo');
     }
 }

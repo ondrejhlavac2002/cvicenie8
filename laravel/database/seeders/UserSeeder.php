@@ -12,7 +12,7 @@ class UserSeeder extends Seeder
     {
         $now = now();
 
-        DB::table('users')->insert([
+        DB::table('users')->upsert([
             [
                 'first_name' => 'Admin',
                 'last_name' => 'Systém',
@@ -63,6 +63,6 @@ class UserSeeder extends Seeder
                 'created_at' => $now,
                 'updated_at' => $now,
             ],
-        ]);
+        ], ['email'], ['first_name', 'last_name', 'password', 'role', 'premium_until', 'updated_at']);
     }
 }

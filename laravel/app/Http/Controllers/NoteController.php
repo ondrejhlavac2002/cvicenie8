@@ -12,20 +12,38 @@ use Illuminate\Validation\Rule;
 class NoteController extends Controller
 {
 
-    public function index()
+    public function index(Request $request)
     {
+        $this->authorize('viewAny', Note::class);
+
         $notes = Note::query()
             ->with(['user', 'categories'])
+            ->where(function ($query) use ($request) {
+                $query->where('status', '!=', Note::STATUS_DRAFT)
+                    ->orWhere('user_id', $request->user()->id);
+            })
             ->recent()
-            ->get();
+            ->paginate(5);
 
-        return response()->json(['notes' => $notes], Response::HTTP_OK);
+        return response()->json($notes, Response::HTTP_OK);
+    }
+
+    public function myNotes(Request $request)
+    {
+        $notes = $request->user()
+            ->notes()
+            ->with(['categories'])
+            ->recent()
+            ->paginate(5);
+
+        return response()->json($notes, Response::HTTP_OK);
     }
 
     public function store(Request $request)
     {
+        $this->authorize('create', Note::class);
+
         $validated = $request->validate([
-            'user_id' => ['required', 'integer', 'exists:users,id'],
             'title' => ['required', 'string', 'max:128'],
             'body' => ['nullable', 'string'],
             'status' => ['nullable', 'string', Rule::in(Note::STATUSES)],
@@ -34,8 +52,9 @@ class NoteController extends Controller
             'category_ids.*' => ['integer', 'exists:categories,id'],
         ]);
 
-        $note = Note::create([
-            'user_id' => $validated['user_id'],
+        $user = $request->user();
+
+        $note = $user->notes()->create([
             'title' => $validated['title'],
             'body' => $validated['body'] ?? null,
             'status' => $validated['status'] ?? Note::STATUS_DRAFT,
@@ -54,6 +73,8 @@ class NoteController extends Controller
 
     public function show(Note $note)
     {
+        $this->authorize('view', $note);
+
         return response()->json([
             'note' => $note->load(['user', 'categories', 'tasks.comments', 'comments']),
         ], Response::HTTP_OK);
@@ -61,8 +82,9 @@ class NoteController extends Controller
 
     public function update(Request $request, Note $note)
     {
+        $this->authorize('update', $note);
+
         $validated = $request->validate([
-            'user_id' => ['sometimes', 'integer', 'exists:users,id'],
             'title' => ['sometimes', 'string', 'max:128'],
             'body' => ['sometimes', 'nullable', 'string'],
             'status' => ['sometimes', 'string', Rule::in(Note::STATUSES)],
@@ -85,6 +107,8 @@ class NoteController extends Controller
 
     public function destroy(Note $note)
     {
+        $this->authorize('delete', $note);
+
         $note->delete();
 
         return response()->json([
@@ -150,6 +174,8 @@ class NoteController extends Controller
 
     public function pin(Note $note)
     {
+        $this->authorize('update', $note);
+
         $note->pin();
 
         return response()->json([
@@ -160,6 +186,8 @@ class NoteController extends Controller
 
     public function unpin(Note $note)
     {
+        $this->authorize('update', $note);
+
         $note->unpin();
 
         return response()->json([
@@ -170,6 +198,8 @@ class NoteController extends Controller
 
     public function publish(Note $note)
     {
+        $this->authorize('update', $note);
+
         $note->publish();
 
         return response()->json([
@@ -180,6 +210,8 @@ class NoteController extends Controller
 
     public function archive(Note $note)
     {
+        $this->authorize('update', $note);
+
         $note->archive();
 
         return response()->json([

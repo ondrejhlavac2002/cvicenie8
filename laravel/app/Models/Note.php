@@ -63,6 +63,11 @@ class Note extends Model
         return $this->morphMany(Comment::class, 'commentable');
     }
 
+    public function attachments(): MorphMany
+    {
+        return $this->morphMany(Attachment::class, 'attachable');
+    }
+
     public function scopeRecent(Builder $query): Builder
     {
         return $query->orderByDesc('updated_at');
