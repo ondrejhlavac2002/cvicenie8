@@ -1,3 +1,18 @@
+<img width="1912" height="1002" alt="{B2AB8FA9-47E8-4561-9DF1-AFADD9F4209A}" src="https://github.com/user-attachments/assets/41638e6b-3fbc-4fcd-9093-c65d19af80e6" />
+<img width="1919" height="1013" alt="{A8BD66CC-B98A-4AEB-AC44-5C7BB65C84B4}" src="https://github.com/user-attachments/assets/64dcbed3-2310-437e-96a2-72490a02c862" />
+<img width="1891" height="944" alt="{8D9BDC58-6842-4DFC-B371-D594FDFEF98E}" src="https://github.com/user-attachments/assets/56586f44-9268-412e-b9ef-e0c650d902d3" />
+<img width="1434" height="972" alt="{3E977F16-C6A2-45F0-B057-4B180CAD230D}" src="https://github.com/user-attachments/assets/1a3b2bad-f93b-46ac-bf26-3a94e0e2c896" />
+<img width="1440" height="978" alt="{FF17125D-D48F-4B4B-88EA-9C84B7BF91A4}" src="https://github.com/user-attachments/assets/af5c2781-c120-46fb-80ec-13d8d9949406" />
+<img width="1435" height="902" alt="{8C93C3B1-C1D7-4FDE-A8F2-EEF82A96F8BC}" src="https://github.com/user-attachments/assets/32cb93c7-bcb5-4bbf-b06f-8e4dd11f2379" />
+<img width="1419" height="906" alt="{7DFB5A88-FC77-4362-A790-934C5B353056}" src="https://github.com/user-attachments/assets/43b1297c-bced-4e1f-8586-bfcfb65d9e1d" />
+<img width="1448" height="1037" alt="{CF358627-7086-4690-9E63-47CD5B21D72C}" src="https://github.com/user-attachments/assets/f9517900-2e44-4fe8-8e93-1bb1c473dfcf" />
+<img width="1434" height="1003" alt="{BE906DD2-86BB-45EA-A662-0DF79CF7773C}" src="https://github.com/user-attachments/assets/ea40db60-61b6-4430-a0ce-7d9a4b777022" />
+<img width="1429" height="1000" alt="{D979DB7E-CB54-46DB-A72B-019BFD507032}" src="https://github.com/user-attachments/assets/7fe16c62-f488-496e-96fa-faeaf09c04e4" />
+<img width="1447" height="952" alt="{FC63030F-5630-4D77-A19F-F714C2107CC8}" src="https://github.com/user-attachments/assets/ac60afb9-9148-4211-96de-f68e41ad22e3" />
+<img width="1441" height="989" alt="{7A572BF0-C7F4-4DA1-96BD-D2D78A3C05EA}" src="https://github.com/user-attachments/assets/9e9596f1-d648-4f92-9833-d466c0d295a0" />
+
+
+
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
 <p align="center">
