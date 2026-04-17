@@ -41,8 +41,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('notes/{note}/comments', [CommentController::class, 'indexForNote']);
     Route::post('notes/{note}/comments', [CommentController::class, 'storeForNote']);
-    Route::get('tasks/{task}/comments', [CommentController::class, 'indexForTask']);
-    Route::post('tasks/{task}/comments', [CommentController::class, 'storeForTask']);
+    Route::get('notes/{note}/tasks/{task}/comments', [CommentController::class, 'indexForTask']);
+    Route::post('notes/{note}/tasks/{task}/comments', [CommentController::class, 'storeForTask']);
     Route::put('comments/{comment}', [CommentController::class, 'update']);
     Route::delete('comments/{comment}', [CommentController::class, 'destroy']);
 

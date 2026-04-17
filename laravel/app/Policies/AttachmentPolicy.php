@@ -7,6 +7,14 @@ use App\Models\User;
 
 class AttachmentPolicy
 {
+    public function before(User $user): bool|null
+    {
+        if ($user->isAdmin()) {
+            return true;
+        }
+        return null;
+    }
+
     public function view(User $user, Attachment $attachment): bool
     {
         $attachable = $attachment->attachable;
@@ -31,7 +39,7 @@ class AttachmentPolicy
         $attachable = $attachment->attachable;
 
         if ($attachable instanceof \App\Models\Note) {
-            return $user->id === $attachable->user_id || $user->isAdmin();
+            return $user->id === $attachable->user_id;
         }
 
         return $user->id === $attachable->id;

@@ -7,6 +7,14 @@ use App\Models\User;
 
 class NotePolicy
 {
+    public function before(User $user): bool|null
+    {
+        if ($user->isAdmin()) {
+            return true;
+        }
+        return null;
+    }
+
     public function viewAny(User $user): bool
     {
         return true;

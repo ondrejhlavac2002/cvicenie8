@@ -39,8 +39,11 @@ class CommentController extends Controller
         ], Response::HTTP_CREATED);
     }
 
-    public function indexForTask(Task $task)
+    public function indexForTask(Request $request, $note, $task)
     {
+        $note = Note::findOrFail($note);
+        $task = Task::findOrFail($task);
+
         $this->authorize('view', $task->note);
 
         $comments = $task->comments()->with('user')->get();
@@ -48,8 +51,11 @@ class CommentController extends Controller
         return response()->json(['comments' => $comments], Response::HTTP_OK);
     }
 
-    public function storeForTask(Request $request, Task $task)
+    public function storeForTask(Request $request, $note, $task)
     {
+        $note = Note::findOrFail($note);
+        $task = Task::findOrFail($task);
+
         $this->authorize('view', $task->note);
         $this->authorize('create', Comment::class);
 
